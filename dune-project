@@ -34,6 +34,7 @@
   caqti
   caqti-eio
   caqti-driver-sqlite3
+  cmdliner
   (alcotest :with-test))
  (tags
   (monitoring metrics eio)))

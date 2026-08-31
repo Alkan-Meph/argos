@@ -11,11 +11,34 @@ the same interface, wired together at boot from the configuration.
 This is a personal project, built for fun and to learn Eio. Do not expect
 stability, support, or a roadmap.
 
-## About AI usage
+## Usage
 
-The architecture, the design decisions, and the code itself are written by a
-human. AI is used on this project as an assistant: writing documentation (sorry
-I'm bad in English...) and gathering information. 
+```sh
+argos config.yml
+```
+
+The only argument is the path to the YAML configuration file. Events go
+to stdout, logs go to stderr; verbosity is controlled with `-v`, `-q` or
+`--verbosity=LEVEL`. See `argos --help` for the full interface.
+
+A configuration example:
+
+```yaml
+plugins:
+  - name: "mem"
+    id: "mem"
+    params:
+      delay: 10.0
+      host: "my-server"
+
+  - name: "logger"
+    id: "logger"
+
+  - name: "db"
+    id: "db"
+    params:
+      uri: "sqlite3:/var/lib/argos/argos.db"
+```
 
 ## Conventions
 
@@ -84,6 +107,13 @@ Building on a non-x86 host relies on emulation for `linux/amd64`,
 which slows compilation down; build the platform matching your
 machine when you just want to test the pipeline.
 
+## About AI usage
+
+The architecture, the design decisions, and the code itself are written by a
+human. AI is used on this project as an assistant: writing documentation (sorry
+I'm bad in English...) and gathering information. 
+
+
 ## TODO
 
 - Automatically tag every event with `host`
@@ -97,6 +127,5 @@ machine when you just want to test the pipeline.
 - Add a rules engine: evaluate thresholds on events and emit alerts
 - Add alerting sinks (Telegram, Slack, webhook, ...)
 - Validate the configuration: non-empty and unique plugin names
-- Proper CLI (cmdliner): config path, verbosity flags, version
 - Share one timestamp across all events of a plugin tick
 - Rebuild the test suite (parsers, dispatcher, loader)

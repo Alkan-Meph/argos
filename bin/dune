@@ -1,7 +1,7 @@
 (executable
  (public_name argos)
  (name main)
- (libraries argos logs logs.fmt))
+ (libraries argos logs logs.fmt logs.cli cmdliner))
 
 (env
  (static

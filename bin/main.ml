@@ -1,4 +1,5 @@
 open Argos.Syntax
+open Cmdliner
 
 let run plugins env =
   let bus_stream = Eio.Stream.create 1000 in
@@ -11,17 +12,26 @@ let run plugins env =
   in
   Eio.Fiber.all (dispatcher_fiber :: plugin_fibers)
 
-let boot () =
-  let path = Sys.argv.(1) in
-  let* config = Argos.Config.load_from_path path in
-  let* plugins = Argos.Loader.load_plugins_from_config config.plugins in
-  Ok (Eio_main.run (run plugins))
-
-let () =
+let boot config_path log_level =
   Logs.set_reporter (Logs_fmt.reporter ());
-  Logs.set_level (Some Logs.Info);
-  match boot () with
-  | Ok _ -> ()
+  Logs.set_level log_level;
+  match
+    let* config = Argos.Config.load_from_path config_path in
+    let+ plugins = Argos.Loader.load_plugins_from_config config.plugins in
+    Eio_main.run (run plugins)
+  with
+  | Ok _ -> 0
   | Error (`Msg err) ->
       Logs.err (fun m -> m "loading error: %s" err);
-      exit 1
+      1
+
+let config_arg =
+  let doc = "path to the YAML config file" in
+  Arg.(required & pos 0 (some file) None & info [] ~docv:"CONFIG" ~doc)
+
+let cmd =
+  let doc = "a tiny plugin-based monitoring agent" in
+  Cmd.make (Cmd.info "argos" ~doc)
+    Term.(const boot $ config_arg $ Logs_cli.level ())
+
+let () = exit (Cmd.eval' cmd)

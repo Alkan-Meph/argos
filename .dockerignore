@@ -1,0 +1,7 @@
+_build/
+_opam/
+.git/
+.nogit/
+dist/
+scripts/
+.DS_Store

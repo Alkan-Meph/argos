@@ -6,4 +6,4 @@
 (env
  (static
   (link_flags
-   (-ccopt -static))))
+   (-ccopt -static -ccopt -Wl,-no-export-dynamic -ccopt -s))))

@@ -62,6 +62,28 @@ lives in the `.mli`.
 The main type of a module is `t`. Conversions are named `to_xxx`
 (`Event.to_yojson`).
 
+## Release build
+
+Releases are static Linux binaries built in Docker (BuildKit required):
+
+```sh
+sh scripts/release.sh              # linux/amd64 (default)
+sh scripts/release.sh linux/arm64
+```
+
+The result lands in `dist/argos-<arch>`: a statically linked, stripped
+binary that runs on any Linux distribution, bare containers included.
+The script fails if the binary is not actually static.
+
+Under the hood, `scripts/Dockerfile` is a multi-stage build: the
+dependencies declared in `dune.lock` are compiled in their own layer
+through dune's `@pkg-install` alias, so only the first build (and any
+lock change) pays the full cost; source changes rebuild argos alone.
+
+Building on a non-x86 host relies on emulation for `linux/amd64`,
+which slows compilation down; build the platform matching your
+machine when you just want to test the pipeline.
+
 ## TODO
 
 - Automatically tag every event with `host`
@@ -78,4 +100,3 @@ The main type of a module is `t`. Conversions are named `to_xxx`
 - Proper CLI (cmdliner): config path, verbosity flags, version
 - Share one timestamp across all events of a plugin tick
 - Rebuild the test suite (parsers, dispatcher, loader)
-- Release build: static binary (musl) and honest opam metadata

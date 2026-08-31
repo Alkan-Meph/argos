@@ -1,0 +1,17 @@
+(library
+ (name argos)
+ (libraries
+  eio_main
+  yaml
+  yaml.unix
+  re
+  logs
+  yojson
+  uri
+  caqti-eio
+  caqti-eio.unix
+  caqti-driver-sqlite3)
+ (preprocess
+  (pps ppx_deriving_yaml)))
+
+(include_subdirs qualified)

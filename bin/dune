@@ -1,0 +1,9 @@
+(executable
+ (public_name argos)
+ (name main)
+ (libraries argos logs logs.fmt))
+
+(env
+ (static
+  (link_flags
+   (-ccopt -static))))

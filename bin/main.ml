@@ -5,7 +5,7 @@ let run plugins env =
   let bus_stream = Eio.Stream.create 1000 in
   let plugin_inputs = List.filter_map snd plugins in
   let plugin_fibers =
-    List.map (fun (plugin, _) -> plugin env bus_stream) plugins
+    List.map (fun (plugin, _) -> plugin ~env ~output:bus_stream) plugins
   in
   let dispatcher_fiber =
     Argos.Dispatcher.run ~input:bus_stream ~outputs:plugin_inputs

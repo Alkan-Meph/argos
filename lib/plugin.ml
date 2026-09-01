@@ -1,4 +1,4 @@
-type t = Eio_unix.Stdenv.base -> Event.t Eio.Stream.t -> unit -> unit
+type t = env:Eio_unix.Stdenv.base -> output:Event.t Eio.Stream.t -> unit -> unit
 type loaded = t * Event.t Eio.Stream.t option
 
 let loop ~clock ~delay producer =

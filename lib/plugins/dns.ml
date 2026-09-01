@@ -13,7 +13,7 @@ let produce name target net clock output () =
   Event.emit ~clock ~stream:output ~source_id:id ~source_name:name
     ~name:"dns_up" ~tags ~value
 
-let run ~name ~delay ~target env output () =
+let run ~name ~delay ~target ~env ~output () =
   let net = Eio.Stdenv.net env in
   let clock = Eio.Stdenv.clock env in
   let producer = produce name target net clock output in

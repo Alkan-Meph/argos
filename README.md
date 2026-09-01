@@ -54,6 +54,10 @@ Private helpers inside a module are free to use positional arguments. Their
 order follows one canon: name, then configuration, then capabilities, then
 streams last.
 
+Long-lived fibers (`Plugin.t`) take all their arguments labeled, runtime
+ones included (`~env`, `~output`), plus a final positional `()`: applying
+it is what starts the loop.
+
 ### Errors
 
 Errors are values: `('a, Error.t) result` everywhere, chained with the

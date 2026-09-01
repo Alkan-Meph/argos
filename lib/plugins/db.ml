@@ -99,7 +99,7 @@ let consume name (module C : Caqti_eio.CONNECTION) cache input =
 (** TODO *)
 let purge (module C : Caqti_eio.CONNECTION) = ()
 
-let run ~name ~uri ~input env _output () =
+let run ~name ~uri ~input ~env ~output () =
   Eio.Switch.run @@ fun sw ->
   match Caqti_eio_unix.connect ~sw ~stdenv:(env :> Caqti_eio.stdenv) uri with
   | Error err ->

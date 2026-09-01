@@ -1,4 +1,4 @@
-type t = Eio_unix.Stdenv.base -> Event.t Eio.Stream.t -> unit -> unit
+type t = env:Eio_unix.Stdenv.base -> output:Event.t Eio.Stream.t -> unit -> unit
 (** A plugin that is called by Argos.
 
     The stream is the output of the plugin. Every event emitted into it will be

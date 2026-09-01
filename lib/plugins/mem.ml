@@ -110,7 +110,7 @@ let produce name host clock get_mem_stats output () =
   | Ok stats -> emit_events name host clock output stats
   | Error (`Msg err) -> Logs.warn (fun m -> m "plugin(%s): %s" name err)
 
-let run ~name ~delay ~host env output () =
+let run ~name ~delay ~host ~env ~output () =
   let clock = Eio.Stdenv.clock env in
   match choose_get_mem_stats env with
   | Ok get_mem_stats ->

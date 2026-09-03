@@ -1,15 +1,13 @@
 open Argos.Syntax
 open Cmdliner
 
-let run plugins env =
-  let bus_stream = Eio.Stream.create 1000 in
+let run global_tags plugins env =
+  let bus = Eio.Stream.create 1000 in
   let plugin_inputs = List.filter_map snd plugins in
-  let plugin_fibers =
-    List.map (fun (plugin, _) -> plugin ~env ~output:bus_stream) plugins
-  in
-  let dispatcher_fiber =
-    Argos.Dispatcher.run ~input:bus_stream ~outputs:plugin_inputs
-  in
+  let clock = Eio.Stdenv.clock env in
+  let emit = Argos.Plugin.make_emit ~global_tags ~clock ~bus in
+  let plugin_fibers = List.map (fun (plugin, _) -> plugin ~env ~emit) plugins in
+  let dispatcher_fiber = Argos.Dispatcher.run ~bus ~inputs:plugin_inputs in
   Eio.Fiber.all (dispatcher_fiber :: plugin_fibers)
 
 let boot config_path log_level =
@@ -18,7 +16,7 @@ let boot config_path log_level =
   match
     let* config = Argos.Config.load_from_path config_path in
     let+ plugins = Argos.Loader.load_plugins_from_config config.plugins in
-    Eio_main.run (run plugins)
+    Eio_main.run (run config.global_tags plugins)
   with
   | Ok _ -> 0
   | Error (`Msg err) ->

@@ -1,24 +1,27 @@
+type name = string
+type tags = (string * string) list
+type value = float
+
 type t = {
   timestamp : float;
   source_id : string;
   source_name : string;
-  name : string;
-  tags : (string * string) list;
-  value : float;
+  name : name;
+  tags : tags;
+  value : value;
 }
 
-let create ~clock ~source_id ~source_name ~name ~tags ~value =
-  { timestamp = Eio.Time.now clock; source_id; source_name; name; tags; value }
+let merge_tags tags0 tags1 =
+  let compare (k0, _) (k1, _) = compare k0 k1 in
+  let tags = List.sort compare tags1 in
+  tags0 |> List.merge compare tags |> List.sort_uniq compare
 
-let emit ~clock ~stream ~source_id ~source_name ~name ~tags ~value =
-  Eio.Stream.add stream
-    (create ~clock ~source_id ~source_name ~name ~tags ~value)
+let create ~global_tags ~timestamp ~source_id ~source_name ~name ~tags ~value =
+  let tags = merge_tags global_tags tags in
+  { timestamp; source_id; source_name; name; tags; value }
 
-let tags_to_yojson tags =
-  `Assoc
-    (tags
-    |> List.sort (fun (k1, _) (k2, _) -> compare k1 k2)
-    |> List.map (fun (k, v) -> (k, `String v)))
+let emit ~stream t = Eio.Stream.add stream t
+let tags_to_yojson tags = `Assoc (List.map (fun (k, v) -> (k, `String v)) tags)
 
 let to_yojson event =
   `Assoc

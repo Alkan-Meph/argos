@@ -24,6 +24,9 @@ to stdout, logs go to stderr; verbosity is controlled with `-v`, `-q` or
 A configuration example:
 
 ```yaml
+global_tags:
+  env: "prod"
+
 plugins:
   - name: "mem"
     id: "mem"
@@ -120,7 +123,6 @@ I'm bad in English...) and gathering information.
 
 ## TODO
 
-- Automatically tag every event with `host`
 - Let the logger plugin offer several output formats (text, JSON, ...)
 - Add data retention (purge of old events) to the db plugin
 - Support PostgreSQL / MariaDB in the db plugin
@@ -131,5 +133,4 @@ I'm bad in English...) and gathering information.
 - Add a rules engine: evaluate thresholds on events and emit alerts
 - Add alerting sinks (Telegram, Slack, webhook, ...)
 - Validate the configuration: non-empty and unique plugin names
-- Share one timestamp across all events of a plugin tick
 - Rebuild the test suite (parsers, dispatcher, loader)

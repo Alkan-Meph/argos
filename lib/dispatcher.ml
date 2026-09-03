@@ -1,10 +1,10 @@
-let consume_publish ~input ~outputs =
-  let event : Event.t = Eio.Stream.take input in
-  List.iter (fun s -> Eio.Stream.add s event) outputs
+let consume_publish ~bus ~inputs =
+  let event = Eio.Stream.take bus in
+  List.iter (fun s -> Eio.Stream.add s event) inputs
 
-let run ~input ~outputs () =
-  (* TODO: a full output stream blocks the whole bus (one stalled consumer
-   freezes every producer). *)
+let run ~bus ~inputs () =
+  (* TODO: a full input stream blocks the whole bus (one stalled consumer
+     freezes every producer). *)
   while true do
-    consume_publish ~input ~outputs
+    consume_publish ~bus ~inputs
   done

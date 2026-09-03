@@ -1,5 +1,15 @@
-type t = env:Eio_unix.Stdenv.base -> output:Event.t Eio.Stream.t -> unit -> unit
+type metrics = (Event.name * Event.tags * Event.value) list
+type emitter = source_id:string -> source_name:string -> metrics -> unit
+type t = env:Eio_unix.Stdenv.base -> emit:emitter -> unit -> unit
 type loaded = t * Event.t Eio.Stream.t option
+
+let make_emit ~global_tags ~clock ~bus ~source_id ~source_name metrics =
+  let timestamp = Eio.Time.now clock in
+  let create_event (name, tags, value) =
+    Event.create ~global_tags ~timestamp ~source_id ~source_name ~name ~tags
+      ~value
+  in
+  metrics |> List.map create_event |> List.iter (Event.emit ~stream:bus)
 
 let loop ~clock ~delay producer =
   while true do

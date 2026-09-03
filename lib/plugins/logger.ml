@@ -1,11 +1,11 @@
 let id = "logger"
 
-let consume name stdout (input : Event.t Eio.Stream.t) =
+let consume name stdout input =
   let event = Eio.Stream.take input in
   let json = Yojson.Safe.to_string (Event.to_yojson event) in
   Eio.Flow.copy_string (json ^ "\n") stdout
 
-let run ~name ~input ~env ~output () =
+let run ~name ~input ~env ~emit () =
   let stdout = env#stdout in
   while true do
     consume name stdout input

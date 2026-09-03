@@ -94,27 +94,27 @@ let choose_get_mem_stats env =
   | Linux -> Linux.get_mem_stats (Eio.Stdenv.fs env)
   | Darwin -> Darwin.get_mem_stats process_mgr
 
-let emit_events name host clock output stats =
+let emit_events host emit stats =
   let tags = [ ("host", host) ] in
-  Event.emit ~clock ~stream:output ~source_id:id ~source_name:name
-    ~name:"mem_total_bytes" ~tags ~value:stats.mem_total_bytes;
-  Event.emit ~clock ~stream:output ~source_id:id ~source_name:name
-    ~name:"mem_used_bytes" ~tags ~value:stats.mem_used_bytes;
-  Event.emit ~clock ~stream:output ~source_id:id ~source_name:name
-    ~name:"mem_available_bytes" ~tags ~value:stats.mem_available_bytes;
-  Event.emit ~clock ~stream:output ~source_id:id ~source_name:name
-    ~name:"mem_used_pct" ~tags ~value:stats.mem_used_pct
+  emit
+    [
+      ("mem_total_bytes", tags, stats.mem_total_bytes);
+      ("mem_used_bytes", tags, stats.mem_used_bytes);
+      ("mem_available_bytes", tags, stats.mem_available_bytes);
+      ("mem_used_pct", tags, stats.mem_used_pct);
+    ]
 
-let produce name host clock get_mem_stats output () =
+let produce name host clock get_mem_stats emit () =
   match get_mem_stats () with
-  | Ok stats -> emit_events name host clock output stats
+  | Ok stats -> emit_events host emit stats
   | Error (`Msg err) -> Logs.warn (fun m -> m "plugin(%s): %s" name err)
 
-let run ~name ~delay ~host ~env ~output () =
+let run ~name ~delay ~host ~env ~emit () =
   let clock = Eio.Stdenv.clock env in
+  let emit = emit ~source_id:id ~source_name:name in
   match choose_get_mem_stats env with
   | Ok get_mem_stats ->
-      let producer = produce name host clock get_mem_stats output in
+      let producer = produce name host clock get_mem_stats emit in
       Plugin.loop ~clock ~delay producer
   | Error (`Msg err) ->
       Logs.err (fun m -> m "plugin(%s): impossible to run: %s" name err)

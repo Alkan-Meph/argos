@@ -8,7 +8,8 @@ type plugin = {
           absent or null. *)
 }
 
-type config = { plugins : plugin list }
+type tags = Event.tags
+type config = { global_tags : tags; plugins : plugin list }
 
 val load_from_path : string -> (config, Error.t) result
 (** Reads and decodes a YAML configuration file. Fails on unreadable files and

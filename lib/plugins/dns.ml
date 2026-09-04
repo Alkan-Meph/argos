@@ -7,7 +7,7 @@ let is_dns_up net target =
   | _ :: _ -> true
   | [] | (exception Eio.Io _) -> false
 
-let produce target net emit () =
+let produce target net emit ~state:_ =
   let tags = [ ("target", target) ] in
   let value = if is_dns_up net target then 1.0 else 0.0 in
   emit [ ("dns_up", tags, value) ]
@@ -16,8 +16,8 @@ let run ~name ~delay ~target ~env ~emit () =
   let net = Eio.Stdenv.net env in
   let clock = Eio.Stdenv.clock env in
   let emit = emit ~source_id:id ~source_name:name in
-  let producer = produce target net emit in
-  Plugin.loop ~clock ~delay producer
+  let produce = produce target net emit in
+  Plugin.producer ~clock ~delay ~state:() produce
 
 (* Config *)
 

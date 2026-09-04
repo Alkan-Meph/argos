@@ -104,7 +104,7 @@ let emit_events host emit stats =
       ("mem_used_pct", tags, stats.mem_used_pct);
     ]
 
-let produce name host clock get_mem_stats emit () =
+let produce name host get_mem_stats emit ~state:_ =
   match get_mem_stats () with
   | Ok stats -> emit_events host emit stats
   | Error (`Msg err) -> Logs.warn (fun m -> m "plugin(%s): %s" name err)
@@ -114,8 +114,8 @@ let run ~name ~delay ~host ~env ~emit () =
   let emit = emit ~source_id:id ~source_name:name in
   match choose_get_mem_stats env with
   | Ok get_mem_stats ->
-      let producer = produce name host clock get_mem_stats emit in
-      Plugin.loop ~clock ~delay producer
+      let produce = produce name host get_mem_stats emit in
+      Plugin.producer ~clock ~delay ~state:() produce
   | Error (`Msg err) ->
       Logs.err (fun m -> m "plugin(%s): impossible to run: %s" name err)
 

@@ -82,9 +82,9 @@ let get_or_insert_series (module C : Caqti_eio.CONNECTION) cache
       Hashtbl.add cache key series_id;
       series_id
 
-let consume name (module C : Caqti_eio.CONNECTION) cache input =
+let consume name (module C : Caqti_eio.CONNECTION) input ~state =
   let event = Eio.Stream.take input in
-  match get_or_insert_series (module C) cache event with
+  begin match get_or_insert_series (module C) state event with
   | Ok series_id ->
       begin match insert_event (module C) event series_id with
       | Ok () -> ()
@@ -95,6 +95,8 @@ let consume name (module C : Caqti_eio.CONNECTION) cache input =
   | Error err ->
       Logs.err (fun m ->
           m "plugin(%s): insert series error: %a" name Caqti.Error.pp err)
+  end;
+  state
 
 (** TODO *)
 let purge (module C : Caqti_eio.CONNECTION) = ()
@@ -111,10 +113,9 @@ let run ~name ~uri ~input ~env ~emit () =
           Logs.err (fun m ->
               m "plugin(%s): init error: %a" name Caqti.Error.pp err)
       | Ok () ->
-          let cache = Hashtbl.create 20 in
-          while true do
-            consume name (module C) cache input
-          done
+          let state = Hashtbl.create 20 in
+          let consume = consume name (module C) input in
+          Plugin.consumer ~state consume
       end
 
 (* Config *)

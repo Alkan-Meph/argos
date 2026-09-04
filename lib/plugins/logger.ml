@@ -1,15 +1,14 @@
 let id = "logger"
 
-let consume name stdout input =
+let consume name stdout input ~state:_ =
   let event = Eio.Stream.take input in
   let json = Yojson.Safe.to_string (Event.to_yojson event) in
   Eio.Flow.copy_string (json ^ "\n") stdout
 
 let run ~name ~input ~env ~emit () =
   let stdout = env#stdout in
-  while true do
-    consume name stdout input
-  done
+  let consume = consume name stdout input in
+  Plugin.consumer ~state:() consume
 
 (* Config *)
 

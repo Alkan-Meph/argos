@@ -39,11 +39,22 @@ val make_emit :
     stamps the batch with one timestamp from [clock], merges [global_tags] in,
     builds the events and pushes them to [bus]. *)
 
-val loop : clock:'a Eio.Time.clock -> delay:float -> (unit -> unit) -> unit
-(** [loop ~clock ~delay producer] runs [producer] forever, sleeping [delay]
-    seconds between calls.
+type 'a callback = state:'a -> 'a
+(** One step of a plugin loop: takes the current state, returns the state for
+    the next step. A mutable state (e.g. a [Hashtbl.t]) is returned as is; a
+    stateless plugin uses [unit] and ignores it ([~state:_]). *)
+
+val producer :
+  clock:'a Eio.Time.clock -> delay:float -> state:'b -> 'b callback -> unit
+(** [producer ~clock ~delay ~state produce] runs [produce] forever, threading
+    the state and sleeping [delay] seconds between calls.
 
     The first call happens immediately, not after [delay].
 
     [delay] is a pause, not a period: the effective interval is [delay] plus the
     producer's own execution time. *)
+
+val consumer : state:'a -> 'a callback -> unit
+(** [consumer ~state consume] runs [consume] forever, threading the state.
+
+    No pacing: [consume] is expected to block on its input stream. *)

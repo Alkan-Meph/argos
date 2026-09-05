@@ -41,6 +41,8 @@ plugins:
     id: "db"
     params:
       uri: "sqlite3:/var/lib/argos/argos.db"
+      retention: 604800.0
+      purge_delay: 3600.0
 ```
 
 ## Conventions
@@ -124,7 +126,6 @@ I'm bad in English...) and gathering information.
 ## TODO
 
 - Let the logger plugin offer several output formats (text, JSON, ...)
-- Add data retention (purge of old events) to the db plugin
 - Support PostgreSQL / MariaDB in the db plugin
 - Add a CPU plugin
 - Add a TCP / UDP plugin

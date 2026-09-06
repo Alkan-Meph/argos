@@ -111,7 +111,7 @@ let purge name clock (module C : Caqti_eio.CONNECTION) retention purge_delay
   | _, _ -> () (* Cannot happen *)
 
 let consume name (module C : Caqti_eio.CONNECTION) input ~state =
-  let event = Eio.Stream.take input in
+  let event = Stream.take input in
   begin match get_or_insert_series (module C) state.cache event with
   | Ok series_id ->
       begin match insert_event (module C) event series_id with
@@ -175,7 +175,7 @@ let load ~name ~uri ~retention ~purge_delay =
   begin
     let* () = check_params retention purge_delay in
     let+ uri = parse_uri uri in
-    let input = Eio.Stream.create 1000 in
+    let input = Stream.create 1000 in
     (run ~name ~uri ~retention ~purge_delay ~input, Some input)
   end
   |> Result.map_error (fun (`Msg err) ->

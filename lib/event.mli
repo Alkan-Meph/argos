@@ -35,7 +35,7 @@ val create :
     wins. The resulting tags are sorted by key. [global_tags] must be sorted by
     key. *)
 
-val emit : stream:t Eio.Stream.t -> t -> unit
+val emit : stream:t Stream.t -> t -> unit
 (** [emit ~stream event] pushes [event] to [stream].
 
     Blocks if [stream] is full, producers slow down instead of dropping events.

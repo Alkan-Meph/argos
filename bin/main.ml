@@ -2,7 +2,7 @@ open Argos.Syntax
 open Cmdliner
 
 let run global_tags plugins env =
-  let bus = Eio.Stream.create 1000 in
+  let bus = Argos.Stream.create 1000 in
   let plugin_inputs = List.filter_map snd plugins in
   let clock = Eio.Stdenv.clock env in
   let emit = Argos.Plugin.make_emit ~global_tags ~clock ~bus in

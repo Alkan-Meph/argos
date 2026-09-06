@@ -17,7 +17,7 @@ type t = env:Eio_unix.Stdenv.base -> emit:emitter -> unit -> unit
     Applying the final [()] starts the plugin. It is meant to be forked by the
     runtime. *)
 
-type loaded = t * Event.t Eio.Stream.t option
+type loaded = t * Event.t Stream.t option
 (** A plugin ready to be wired up and run.
 
     The stream is the plugin's input queue: [Some stream] means the plugin
@@ -30,7 +30,7 @@ type loaded = t * Event.t Eio.Stream.t option
 val make_emit :
   global_tags:Event.tags ->
   clock:'a Eio.Time.clock ->
-  bus:Event.t Eio.Stream.t ->
+  bus:Event.t Stream.t ->
   source_id:string ->
   source_name:string ->
   metrics ->

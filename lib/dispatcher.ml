@@ -1,10 +1,14 @@
 let consume_publish ~bus ~inputs =
-  let event = Eio.Stream.take bus in
-  List.iter (fun s -> Eio.Stream.add s event) inputs
+  let event = Stream.take bus in
+  let add_or_log stream =
+    if not (Stream.try_add stream event) then
+      Logs.warn (fun m ->
+          m "dropped event %S from plugin(%s): consumer input full"
+            event.Event.name event.Event.source_name)
+  in
+  List.iter add_or_log inputs
 
 let run ~bus ~inputs () =
-  (* TODO: a full input stream blocks the whole bus (one stalled consumer
-     freezes every producer). *)
   while true do
     consume_publish ~bus ~inputs
   done

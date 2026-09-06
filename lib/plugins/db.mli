@@ -3,7 +3,7 @@ val run :
   uri:Uri.t ->
   retention:float option ->
   purge_delay:float option ->
-  input:Event.t Eio.Stream.t ->
+  input:Event.t Stream.t ->
   Plugin.t
 (** [run ~name ~uri ~retention ~purge_delay ~input] is the storage sink: it
     connects to the database at [uri], prepares the schema, then stores every

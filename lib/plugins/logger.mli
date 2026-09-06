@@ -1,4 +1,4 @@
-val run : name:string -> input:Event.t Eio.Stream.t -> Plugin.t
+val run : name:string -> input:Event.t Stream.t -> Plugin.t
 (** [run ~name ~input] is a sink: it writes every event taken from [input] to
     standard output, one JSON object per line (JSON Lines).
 

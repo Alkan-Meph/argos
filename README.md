@@ -53,7 +53,8 @@ A function takes at most one positional argument: its subject (the thing the
 function's name is about), placed last. Every other argument is labeled. When
 there is no obvious single subject, everything is labeled. Printf-style
 functions (like `Error.msgf`) follow the ecosystem idiom instead and stay
-positional.
+positional, and so do container modules (like `Stream`): the container comes
+first, everything is positional, mirroring `Hashtbl`, `Queue` and friends.
 
 Private helpers inside a module are free to use positional arguments. Their
 order follows one canon: name, then configuration, then capabilities, then

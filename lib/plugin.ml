@@ -1,7 +1,7 @@
 type metrics = (Event.name * Event.tags * Event.value) list
 type emitter = source_id:string -> source_name:string -> metrics -> unit
 type t = env:Eio_unix.Stdenv.base -> emit:emitter -> unit -> unit
-type loaded = t * Event.t Eio.Stream.t option
+type loaded = t * Event.t Stream.t option
 type 'a callback = state:'a -> 'a
 
 let make_emit ~global_tags ~clock ~bus ~source_id ~source_name metrics =

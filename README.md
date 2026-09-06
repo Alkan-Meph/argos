@@ -94,6 +94,24 @@ lives in the `.mli`.
 The main type of a module is `t`. Conversions are named `to_xxx`
 (`Event.to_yojson`).
 
+## Local build
+
+The project uses dune package management: no opam switch needed, only
+dune (>= 3.24). Dependencies are pinned by the committed `dune.lock`
+and fetched by dune itself:
+
+```sh
+dune build
+```
+
+The first build downloads and compiles the toolchain and the
+dependencies, so it takes a while; later builds only rebuild argos.
+Run without installing:
+
+```sh
+dune exec argos -- config.yml
+```
+
 ## Release build
 
 Releases are static Linux binaries built in Docker (BuildKit required):

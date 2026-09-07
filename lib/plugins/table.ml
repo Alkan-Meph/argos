@@ -4,4 +4,5 @@ let plugins =
     ("logger", Logger.load_from_config);
     ("mem", Mem.load_from_config);
     ("db", Db.load_from_config);
+    ("tcp", Tcp.load_from_config);
   ]

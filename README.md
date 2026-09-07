@@ -34,6 +34,14 @@ plugins:
       delay: 10.0
       host: "my-server"
 
+  - name: "tcp"
+    id: "tcp"
+    params:
+      delay: 30.0
+      target: "example.com"
+      port: 443
+      timeout: 5.0
+
   - name: "logger"
     id: "logger"
 
@@ -147,7 +155,7 @@ I'm bad in English...) and gathering information.
 - Let the logger plugin offer several output formats (text, JSON, ...)
 - Support PostgreSQL / MariaDB in the db plugin
 - Add a CPU plugin
-- Add a TCP / UDP plugin
+- Add a UDP plugin (needs application-level probes to be meaningful)
 - Add a processes plugin (per-process information)
 - Add a metrics visualization plugin
 - Add a rules engine: evaluate thresholds on events and emit alerts

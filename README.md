@@ -53,6 +53,16 @@ plugins:
       purge_delay: 3600.0
 ```
 
+### Plugins
+
+| Plugin | Linux | macOS | FreeBSD |
+| ------ | ----- | ----- | ------- |
+| mem    | yes   | yes   | no      |
+| dns    | yes   | yes   | untested |
+| tcp    | yes   | yes   | untested |
+| logger | yes   | yes   | untested |
+| db     | yes   | yes   | untested |
+
 ## Conventions
 
 ### Function signatures
